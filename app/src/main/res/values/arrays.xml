@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="logindata">
+        <item>username,password</item>
+        <item>1,1</item>
+        <item>qwertz,12345</item>
+        <item>southernWhale15,h2kk1ISM8</item>
+        <item>boop,happyface</item>
+    </array>
+</resources>

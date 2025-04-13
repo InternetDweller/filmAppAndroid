@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_all_films">
+
+    <fragment
+        android:id="@+id/navigation_all_films"
+        android:name="com.example.lab1.ui.all_films.AllFilmsFragment"
+        android:label="@string/title_all_films"
+        tools:layout="@layout/fragment_all_films" />
+
+    <fragment
+        android:id="@+id/navigation_selected_film"
+        android:name="com.example.lab1.ui.selected_film.SelectedFilmFragment"
+        android:label="@string/title_selected_film"
+        tools:layout="@layout/fragment_selected_film" />
+</navigation>

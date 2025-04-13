@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lab1</string>
+    <string name="title_activity_films">Activity_Films</string>
+    <string name="hint_username">Имя пользователя</string>
+    <string name="hint_password">Пароль</string>
+    <string name="caption_login">Войти</string>
+    <string name="title_all_films">Фильмы</string>
+    <string name="title_selected_film">Выбранный фильм</string>
+</resources>
