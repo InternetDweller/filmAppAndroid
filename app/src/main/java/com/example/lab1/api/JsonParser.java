@@ -6,11 +6,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class JsonParser { // Для исп-я требуется создание инстанса
+public class JsonParser {
     public static class Film { // Модель данных для ответа API
-        public String name;
-        public ArrayList<String> genres;
-        public int year;
+        private String nameRu;
+        private String nameOrig;
+        private ArrayList<String> genres;
+        private int year;
+
+        public String getValidName() {
+            if (nameRu.equals("null") && nameOrig.equals("null")) { return "[Название отсутствует]"; }
+            if (nameRu.equals("null")) { return nameOrig; }
+            if (nameOrig.equals("null")) { return nameRu; }
+            return ( nameRu + " (" + nameOrig + ")" );
+        }
+        public String getGenresString() { return String.join(", ", genres);}
+        public String getYearString() { return ("" + year); }
     }
 
     public static ArrayList<Film> parseShortInfo(String jsonString) throws JSONException { // Превращает JSON в массив объектов. Для списка фильмов
@@ -24,7 +34,8 @@ public class JsonParser { // Для исп-я требуется создани�
 
         for (int i = 0; i < jsonFilmArray.length(); i++) {
             Film tmpFilm = new Film();
-            tmpFilm.name = jsonFilmArray.getJSONObject(i).getString("nameRu");
+            tmpFilm.nameRu = jsonFilmArray.getJSONObject(i).getString("nameRu");
+            tmpFilm.nameOrig = jsonFilmArray.getJSONObject(i).getString("nameOriginal");
             tmpFilm.year = jsonFilmArray.getJSONObject(i).getInt("year");
 
             JSONArray jsonGenreArray = jsonFilmArray.getJSONObject(i).getJSONArray("genres");

@@ -6,4 +6,7 @@
     <string name="caption_login">Войти</string>
     <string name="title_all_films">Фильмы</string>
     <string name="title_selected_film">Выбранный фильм</string>
+    <string name="recycler_item_film_title">Название фильма</string>
+    <string name="recycler_item_genres">Жанры</string>
+    <string name="recycler_item_year">Год</string>
 </resources>

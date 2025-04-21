@@ -4,26 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lab1.api.FilmsAPI;
 import com.example.lab1.api.JsonParser;
 import com.example.lab1.databinding.FragmentAllFilmsBinding;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.json.JSONException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 public class AllFilmsFragment extends Fragment {
+    public RecyclerView mRecyclerView;
+    public RecyclerView.Adapter<AllFilmsAdapter.ViewHolder> mAdapter;
+    public RecyclerView.LayoutManager mLayoutManager;
+
+//================================
 
     private FragmentAllFilmsBinding binding;
 
@@ -35,24 +33,33 @@ public class AllFilmsFragment extends Fragment {
         binding = FragmentAllFilmsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textAllFilms;
-        allFilmsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+//================================
 
-        FilmsAPI.Requests.getTopFilms(getContext(), new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
+        // ❗❗❗ LITERAL WTF BROOOO Q-Q ↓↓↓
+        //View v = inflater.inflate(R.layout.fragment_all_films, container, false);
+        //mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerview_all_films);
+        mRecyclerView = binding.recyclerviewAllFilms;
+        mRecyclerView.setHasFixedSize(true);
 
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                try {
-                    System.out.println("response here");
-                    ArrayList<JsonParser.Film> filmsParsed = JsonParser.parseShortInfo(response.body().string());
-                    System.out.println(filmsParsed.get(0).name);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        final ArrayList<JsonParser.Film> recyclerViewData = new ArrayList<>();
+        mAdapter = new AllFilmsAdapter(recyclerViewData);
+        mRecyclerView.setAdapter(mAdapter);
+
+        allFilmsViewModel.fetchDataFromApi(getContext());
+
+        // Updating the RecyclerView on mutable data change
+        allFilmsViewModel.getFilms().observe(getViewLifecycleOwner(), films -> {
+            if (!films.isEmpty()) {
+                if (!recyclerViewData.isEmpty()) {
+                    int oldSize = recyclerViewData.size();
+                    recyclerViewData.clear();
+                    mAdapter.notifyItemRangeRemoved(0, oldSize - 1);
                 }
+                recyclerViewData.addAll(films);
+                mAdapter.notifyItemRangeInserted(0, films.size() - 1);
             }
         });
         return root;
@@ -63,5 +70,4 @@ public class AllFilmsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 }
