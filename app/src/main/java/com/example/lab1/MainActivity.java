@@ -3,6 +3,7 @@ package com.example.lab1;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.lab1.db.DBHelper;
+import com.example.lab1.model.User;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,24 +39,28 @@ public class MainActivity extends AppCompatActivity {
         EditText Input_Username = findViewById(R.id.Input_Username),
                  Input_Password = findViewById(R.id.Input_Password);
 
+        //=========================================================
+        // Loading data from the db outside the click listener
+        DBHelper dbhelper = new DBHelper(this);
+        ArrayList<User> users = dbhelper.getUsers();
+        dbhelper.close();
+        //=========================================================
+
         Button_Login.setOnClickListener(
                 // Lambda expression
                 // replaces new View.OnClickListener()
                 // that overrides onClick(View v)
                 v -> {
-                    TypedArray logindata = getResources().obtainTypedArray(R.array.logindata);
                     boolean loginDataMatches = false;
 
-                    for (int i = 0; i < logindata.length(); i++) {
-                        String[] strs = logindata.getString(i).split(",");
-                        if (Input_Username.getText().toString().equals(strs[0]) && Input_Password.getText().toString().equals(strs[1])) {
+                    for (int i = 0; i < users.size(); i++) {
+                        if (Input_Username.getText().toString().equals(users.get(i).getLogin()) && Input_Password.getText().toString().equals(users.get(i).getPassword())) {
                             loginDataMatches = true;
                             switchActivities();
                         }
                     }
 
                     if (!loginDataMatches) { Toast.makeText(MainActivity.this, "Неверные данные", Toast.LENGTH_SHORT).show(); }
-                    logindata.recycle();
                 });
     };
 

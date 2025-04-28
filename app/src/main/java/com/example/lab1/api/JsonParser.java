@@ -5,24 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import com.example.lab1.model.Film;
 
 public class JsonParser {
-    public static class Film { // Модель данных для ответа API
-        private String nameRu;
-        private String nameOrig;
-        private ArrayList<String> genres;
-        private int year;
-
-        public String getValidName() {
-            if (nameRu.equals("null") && nameOrig.equals("null")) { return "[Название отсутствует]"; }
-            if (nameRu.equals("null")) { return nameOrig; }
-            if (nameOrig.equals("null")) { return nameRu; }
-            return ( nameRu + " (" + nameOrig + ")" );
-        }
-        public String getGenresString() { return String.join(", ", genres);}
-        public String getYearString() { return ("" + year); }
-    }
-
     public static ArrayList<Film> parseShortInfo(String jsonString) throws JSONException { // Превращает JSON в массив объектов. Для списка фильмов
         JSONObject jsonObject = new JSONObject(jsonString);
         // ;-; How was I supposed to know THIS was the error??
@@ -39,15 +24,62 @@ public class JsonParser {
             tmpFilm.year = jsonFilmArray.getJSONObject(i).getInt("year");
 
             JSONArray jsonGenreArray = jsonFilmArray.getJSONObject(i).getJSONArray("genres");
-            ArrayList<String> genresList = new ArrayList<>();
-            for (int j = 0; j < jsonGenreArray.length(); j++) {
-                genresList.add(jsonGenreArray.getJSONObject(j).getString("genre"));
-            }
-            tmpFilm.genres = genresList;
+            tmpFilm.genres = jsonArrayToString(jsonGenreArray, "genre", "[Список жанров отсутствует]");
 
             filmsList.add(tmpFilm);
         }
 
         return filmsList;
+    }
+
+    public static ArrayList<Film> parseLongInfo(String jsonString) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        JSONArray jsonFilmArray = jsonObject.getJSONArray("items");
+
+        ArrayList<Film> filmsList = new ArrayList<>();
+
+        for (int i = 0; i < jsonFilmArray.length(); i++) {
+            Film tmpFilm = new Film();
+            tmpFilm.id = jsonFilmArray.getJSONObject(i).getInt("kinopoiskId");
+            tmpFilm.nameRu = jsonFilmArray.getJSONObject(i).getString("nameRu");
+            tmpFilm.nameOrig = jsonFilmArray.getJSONObject(i).getString("nameOriginal");
+
+            String jsonYear = jsonFilmArray.getJSONObject(i).getString("year");
+            if (jsonYear.equals("null")) {
+                tmpFilm.year = 0;
+            } else {
+                tmpFilm.year = jsonFilmArray.getJSONObject(i).getInt("year");
+            }
+
+            tmpFilm.poster = jsonFilmArray.getJSONObject(i).getString("posterUrl");
+            tmpFilm.description = jsonFilmArray.getJSONObject(i).getString("description");
+
+            JSONArray jsonGenreArray = jsonFilmArray.getJSONObject(i).getJSONArray("genres");
+            tmpFilm.genres = jsonArrayToString(jsonGenreArray, "genre", "[Список жанров отсутствует]");
+
+            JSONArray jsonCountryArray = jsonFilmArray.getJSONObject(i).getJSONArray("countries");
+            tmpFilm.countries = jsonArrayToString(jsonCountryArray, "country", "[Список стран отсутствует]");
+
+            filmsList.add(tmpFilm);
+        }
+
+        return filmsList;
+    }
+
+    private static String jsonArrayToString(JSONArray jsonArray, String fieldName, String resultDefault) {
+        String result = resultDefault;
+
+        try {
+            ArrayList<String> arrayList = new ArrayList<>();
+            for (int j = 0; j < jsonArray.length(); j++) {
+                arrayList.add(jsonArray.getJSONObject(j).getString(fieldName));
+            }
+            result = String.join(", ", arrayList);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

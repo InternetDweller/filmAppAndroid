@@ -9,12 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lab1.R;
-import com.example.lab1.api.JsonParser;
+import com.example.lab1.model.Film;
 
 import java.util.ArrayList;
 
 public class AllFilmsAdapter extends RecyclerView.Adapter<AllFilmsAdapter.ViewHolder> {
-    private final ArrayList<JsonParser.Film> mDataset;
+    private final ArrayList<Film> mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextViewTitle, mTextViewGenres, mTextViewYear;
@@ -27,7 +27,7 @@ public class AllFilmsAdapter extends RecyclerView.Adapter<AllFilmsAdapter.ViewHo
         }
     }
 
-    public AllFilmsAdapter(ArrayList<JsonParser.Film> dataset) {
+    public AllFilmsAdapter(ArrayList<Film> dataset) {
         mDataset = dataset;
     }
 
@@ -42,7 +42,7 @@ public class AllFilmsAdapter extends RecyclerView.Adapter<AllFilmsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewholder, int elementId) {
         viewholder.mTextViewTitle.setText(mDataset.get(elementId).getValidName());
-        viewholder.mTextViewGenres.setText(mDataset.get(elementId).getGenresString());
+        viewholder.mTextViewGenres.setText(mDataset.get(elementId).genres);
         viewholder.mTextViewYear.setText(mDataset.get(elementId).getYearString());
     }
 

@@ -2,19 +2,31 @@ package com.example.lab1;
 
 import android.os.Bundle;
 
+import com.example.lab1.db.DBHelper;
+import com.example.lab1.model.Film;
+import com.example.lab1.ui.all_films.AllFilmsViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.lab1.databinding.ActivityFilmsBinding;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class Activity_Films extends AppCompatActivity {
 
@@ -35,6 +47,24 @@ public class Activity_Films extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        //=========================================================
+        AllFilmsViewModel allfilmsviewmodel = new ViewModelProvider(this).get(AllFilmsViewModel.class);
+
+        DBHelper dbhelper = new DBHelper(this);
+        dbhelper.loadFilmsIntoDb(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                ArrayList<Film> tmpFilms = dbhelper.getShortInfo();
+                allfilmsviewmodel.postFilmsData(tmpFilms);
+            }
+        });
+        //=========================================================
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
