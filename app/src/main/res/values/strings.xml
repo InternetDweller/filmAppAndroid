@@ -9,4 +9,6 @@
     <string name="recycler_item_film_title">Название фильма</string>
     <string name="recycler_item_genres">Жанры</string>
     <string name="recycler_item_year">Год</string>
+    <string name="selected_film_placeholder_countries">Страна</string>
+    <string name="selected_film_placeholder_description">Описание</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.lab1.model;
 
-public class Film { // Модель данных для ответа API
+import java.io.Serializable;
+
+public class Film implements Serializable { // Модель данных для ответа API
     public int id;
     public String nameRu;
     public String nameOrig;

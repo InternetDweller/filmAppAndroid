@@ -198,6 +198,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return tmpFilms;
     }
 
+    public ArrayList<Film> getLongInfo() {
+        ArrayList<Film> tmpFilms = new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM films", null);
+
+        while (cursor.moveToNext()) {
+            Film tmpFilm = new Film();
+            tmpFilm.nameRu = cursor.getString(1);
+            tmpFilm.nameOrig = cursor.getString(2);
+            tmpFilm.genres = cursor.getString(3);
+            tmpFilm.year = cursor.getInt(4);
+            tmpFilm.poster = cursor.getString(5);
+            tmpFilm.countries = cursor.getString(6);
+            tmpFilm.description = cursor.getString(7);
+            tmpFilms.add(tmpFilm);
+        }
+
+        cursor.close();
+        return tmpFilms;
+    }
+
     public void loadFilmsIntoDb(Callback fetchCallback) {
         createFilmsTable();
         fetchFilms(fetchCallback);

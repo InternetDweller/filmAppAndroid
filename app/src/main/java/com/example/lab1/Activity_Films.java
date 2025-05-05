@@ -60,7 +60,7 @@ public class Activity_Films extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                ArrayList<Film> tmpFilms = dbhelper.getShortInfo();
+                ArrayList<Film> tmpFilms = dbhelper.getLongInfo();
                 allfilmsviewmodel.postFilmsData(tmpFilms);
             }
         });

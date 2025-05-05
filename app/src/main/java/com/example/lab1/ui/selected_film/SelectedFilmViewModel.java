@@ -31,4 +31,12 @@ public class SelectedFilmViewModel extends ViewModel {
             throw new RuntimeException(e);
         }
     }
+
+    public void setFilmData(Film film) {
+        try {
+            mFilm.setValue(film);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

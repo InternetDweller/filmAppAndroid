@@ -1,6 +1,7 @@
 package com.example.lab1.ui.all_films;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +9,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lab1.R;
 import com.example.lab1.databinding.FragmentAllFilmsBinding;
 import com.example.lab1.model.Film;
 
 import java.util.ArrayList;
 
-public class AllFilmsFragment extends Fragment {
+public class AllFilmsFragment extends Fragment implements AllFilmsRVInterface {
     public RecyclerView mRecyclerView;
     public RecyclerView.Adapter<AllFilmsAdapter.ViewHolder> mAdapter;
     public RecyclerView.LayoutManager mLayoutManager;
@@ -47,7 +52,7 @@ public class AllFilmsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final ArrayList<Film> recyclerViewData = new ArrayList<>();
-        mAdapter = new AllFilmsAdapter(recyclerViewData);
+        mAdapter = new AllFilmsAdapter(recyclerViewData, this); //because this implements the interface
         mRecyclerView.setAdapter(mAdapter);
 
         // Updating the RecyclerView on mutable data change
@@ -69,5 +74,19 @@ public class AllFilmsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRVItemClick(int itemPos, ArrayList<Film> data) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("film", data.get(itemPos));
+
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_films);
+        navController.navigate(
+                R.id.navigation_selected_film,
+                bundle,
+                // Sync the bottom ribbon ↓
+                new NavOptions.Builder().setPopUpTo(R.id.mobile_navigation, true).build()
+        );
     }
 }

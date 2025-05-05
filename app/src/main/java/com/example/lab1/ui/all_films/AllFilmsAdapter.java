@@ -14,21 +14,31 @@ import com.example.lab1.model.Film;
 import java.util.ArrayList;
 
 public class AllFilmsAdapter extends RecyclerView.Adapter<AllFilmsAdapter.ViewHolder> {
-    private final ArrayList<Film> mDataset;
+    private static ArrayList<Film> mDataset = null;
+    private final AllFilmsRVInterface allFilmsRVInterface;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextViewTitle, mTextViewGenres, mTextViewYear;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v, AllFilmsRVInterface rvInterface) {
             super(v);
             mTextViewTitle = v.findViewById(R.id.recyclerview_textView_title);
             mTextViewGenres = v.findViewById(R.id.recyclerview_textView_genres);
             mTextViewYear = v.findViewById(R.id.recyclerview_textView_year);
+            v.setOnClickListener(rvView -> {
+                if (rvInterface != null) {
+                    int position = getBindingAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        rvInterface.onRVItemClick(position, mDataset);
+                    }
+                }
+            });
         }
     }
 
-    public AllFilmsAdapter(ArrayList<Film> dataset) {
+    public AllFilmsAdapter(ArrayList<Film> dataset, AllFilmsRVInterface rvinterface) {
         mDataset = dataset;
+        allFilmsRVInterface = rvinterface;
     }
 
     @NonNull
@@ -36,7 +46,7 @@ public class AllFilmsAdapter extends RecyclerView.Adapter<AllFilmsAdapter.ViewHo
     public AllFilmsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_item, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, allFilmsRVInterface);
     }
 
     @Override
