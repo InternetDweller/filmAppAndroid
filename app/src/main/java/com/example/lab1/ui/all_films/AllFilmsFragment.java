@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lab1.FilmDataViewModel;
 import com.example.lab1.R;
 import com.example.lab1.databinding.FragmentAllFilmsBinding;
 import com.example.lab1.model.Film;
@@ -30,12 +31,15 @@ public class AllFilmsFragment extends Fragment implements AllFilmsRVInterface {
 
     private FragmentAllFilmsBinding binding;
 
+    private FilmDataViewModel filmDataViewModel;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //AllFilmsViewModel allFilmsViewModel =
                 //new ViewModelProvider(this).get(AllFilmsViewModel.class);
         AllFilmsViewModel allFilmsViewModel =
                 new ViewModelProvider(requireActivity()).get(AllFilmsViewModel.class);
+        filmDataViewModel = new ViewModelProvider(requireActivity()).get(FilmDataViewModel.class);
 
         binding = FragmentAllFilmsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -78,13 +82,22 @@ public class AllFilmsFragment extends Fragment implements AllFilmsRVInterface {
 
     @Override
     public void onRVItemClick(int itemPos, ArrayList<Film> data) {
-        Bundle bundle = new Bundle();
+        /*Bundle bundle = new Bundle();
         bundle.putSerializable("film", data.get(itemPos));
 
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_films);
         navController.navigate(
                 R.id.navigation_selected_film,
                 bundle,
+                // Sync the bottom ribbon ↓
+                new NavOptions.Builder().setPopUpTo(R.id.mobile_navigation, true).build()
+        );*/
+
+        filmDataViewModel.setSelectedFilm(data.get(itemPos));
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_films);
+        navController.navigate(
+                R.id.navigation_selected_film,
+                null,
                 // Sync the bottom ribbon ↓
                 new NavOptions.Builder().setPopUpTo(R.id.mobile_navigation, true).build()
         );

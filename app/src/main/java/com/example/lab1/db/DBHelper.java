@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -220,7 +221,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void loadFilmsIntoDb(Callback fetchCallback) {
-        createFilmsTable();
-        fetchFilms(fetchCallback);
+        try {
+            createFilmsTable();
+            fetchFilms(fetchCallback);
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            Log.i("SQLiteLog", "(intended behaviour)");
+        }
     }
 }

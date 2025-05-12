@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.lab1.FilmDataViewModel;
 import com.example.lab1.R;
 import com.example.lab1.databinding.FragmentSelectedFilmBinding;
 import com.example.lab1.model.Film;
@@ -19,11 +20,13 @@ import com.squareup.picasso.Picasso;
 
 public class SelectedFilmFragment extends Fragment {
     private FragmentSelectedFilmBinding binding;
+    private FilmDataViewModel filmDataViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SelectedFilmViewModel selectedFilmViewModel =
                 new ViewModelProvider(this).get(SelectedFilmViewModel.class);
+        filmDataViewModel = new ViewModelProvider(requireActivity()).get(FilmDataViewModel.class);
 
         binding = FragmentSelectedFilmBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -33,7 +36,28 @@ public class SelectedFilmFragment extends Fragment {
 
         //-------------------------------------------
 
-        Bundle args = getArguments();
+        binding.textSelectedFilm.setVisibility(View.VISIBLE);
+        binding.selectedFilmData.setVisibility(View.GONE);
+
+        filmDataViewModel.getSelectedFilm().observe(getViewLifecycleOwner(), film -> {
+            if (film != null) {
+                binding.textSelectedFilm.setVisibility(View.GONE);
+                binding.selectedFilmData.setVisibility(View.VISIBLE);
+
+                Picasso.get()
+                        .load(film.poster)
+                        .into(binding.imageViewPoster);
+
+                binding.textViewFilmTitle.setText(film.getValidName());
+                binding.textViewGenres.setText(film.genres);
+                binding.textViewYear.setText(film.getYearString());
+                binding.textViewCountries.setText(film.countries);
+                binding.textViewDescription.setText(film.description);
+
+            }
+        });
+
+        /*Bundle args = getArguments();
         if (args != null) {
             binding.textSelectedFilm.setVisibility(View.GONE);
             binding.selectedFilmData.setVisibility(View.VISIBLE);
@@ -54,7 +78,7 @@ public class SelectedFilmFragment extends Fragment {
         } else {
             binding.textSelectedFilm.setVisibility(View.VISIBLE);
             binding.selectedFilmData.setVisibility(View.GONE);
-        }
+        }*/
 
         /*selectedFilmViewModel.getFilm().observe(getViewLifecycleOwner(), film -> {
             Log.d("OBSERVER", film.getValidName());
