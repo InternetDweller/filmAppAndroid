@@ -1,5 +1,8 @@
 package com.example.lab1.ui.all_films;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import com.example.lab1.FilmDataViewModel;
 import com.example.lab1.R;
 import com.example.lab1.databinding.FragmentAllFilmsBinding;
 import com.example.lab1.model.Film;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -71,6 +75,29 @@ public class AllFilmsFragment extends Fragment implements AllFilmsRVInterface {
                 mAdapter.notifyItemRangeInserted(0, films.size() - 1);
             }
         });
+
+        FloatingActionButton fab = binding.fab;
+        fab.setVisibility(GONE);
+
+        fab.setOnClickListener(v -> {
+            mRecyclerView.smoothScrollToPosition(0);
+            fab.setVisibility(GONE);
+        });
+
+        LinearLayoutManager llm = (LinearLayoutManager)mRecyclerView.getLayoutManager();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    fab.setVisibility(VISIBLE);
+                } else {
+                    if (llm != null && llm.findFirstCompletelyVisibleItemPosition() == 0) {
+                        fab.setVisibility(GONE);
+                    }
+                }
+            }
+        });
+
         return root;
     }
 
